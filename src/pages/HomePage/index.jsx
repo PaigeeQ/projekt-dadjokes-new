@@ -1,37 +1,26 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { Joke } from '../components/jokes/joke';
 import './style.css';
 
 export const HomePage = () => {
-  const [likes, setLikes] = useState(0);
-  const [dislikes, setDislikes] = useState(0);
-  const handleClick = () => {
-    setLikes(likes + 1)};
-
-  const handleClick2 = () => {
-    setDislikes(dislikes + 1)};
+  const [jokess, setJokess] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('https://raw.githubusercontent.com/Czechitas-podklady-WEB/daweb-test/deploy/jokes.json');
+      const data = await response.json();
+      setJokess(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="container">
-    <div className="joke">
-      <div className="joke__body">
-        <div className="joke__user">
-          <img className="user-avatar" src="https://raw.githubusercontent.com/Czechitas-podklady-WEB/dadjokes/main/users/user01.png" />
-          <p className="user-name">Neroxx</p>
-        </div>
-
-        <p className="joke__text">
-          The secret service isn't allowed to yell "Get down!" anymore when
-          the president is about to be attacked. Now they have to yell
-          "Donald, duck!"
-        </p>
-      </div>
-      <div className="joke__likes">
-        <button id="btn-up" className="btn-like btn-like--up" onClick={handleClick}></button>
-        <span id="likes-up" className="likes-count likes-count--up">{likes}</span>
-        <button id="btn-down" className="btn-like btn-like--down" onClick={handleClick2}></button>
-        <span id="likes-down" className="likes-count likes-count--down">{dislikes}</span>
-      </div>
-    </div>
+      {jokess.map((vtip) => (
+        <Joke 
+         key={vtip.id} userAvatar={vtip.avatar} userName={vtip.name} text={vtip.text} likes={vtip.likes} dislikes={vtip.dislikes}
+        />
+      ))}
   </div>
   );
 };
